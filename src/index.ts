@@ -127,6 +127,9 @@ export function useReactMediaRecorder({
     };
     try {
       if (customMediaStream) {
+        if (mediaStream.current) {
+          mediaStream.current.getTracks().forEach(track => track.stop());
+        }
         mediaStream.current = customMediaStream;
       } else if (screen) {
         const stream = (await window.navigator.mediaDevices.getDisplayMedia({
@@ -146,11 +149,17 @@ export function useReactMediaRecorder({
               .getAudioTracks()
               .forEach((audioTrack) => stream.addTrack(audioTrack));
         }
+        if (mediaStream.current) {
+          mediaStream.current.getTracks().forEach(track => track.stop());
+        }
         mediaStream.current = stream;
       } else {
         const stream = await window.navigator.mediaDevices.getUserMedia(
             requiredMedia
         );
+        if (mediaStream.current) {
+          mediaStream.current.getTracks().forEach(track => track.stop());
+        }
         mediaStream.current = stream;
       }
       setStatus("idle");
