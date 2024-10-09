@@ -127,9 +127,6 @@ export function useReactMediaRecorder({
     };
     try {
       if (customMediaStream) {
-        if (mediaStream.current) {
-          mediaStream.current.getTracks().forEach(track => track.stop());
-        }
         mediaStream.current = customMediaStream;
       } else if (screen) {
         const stream = (await window.navigator.mediaDevices.getDisplayMedia({
@@ -149,17 +146,14 @@ export function useReactMediaRecorder({
               .getAudioTracks()
               .forEach((audioTrack) => stream.addTrack(audioTrack));
         }
-        if (mediaStream.current) {
-          mediaStream.current.getTracks().forEach(track => track.stop());
-        }
         mediaStream.current = stream;
       } else {
+        // if (mediaStream.current) {
+        //   mediaStream.current.getTracks().forEach(track => track.stop());
+        // }
         const stream = await window.navigator.mediaDevices.getUserMedia(
             requiredMedia
         );
-        if (mediaStream.current) {
-          mediaStream.current.getTracks().forEach(track => track.stop());
-        }
         mediaStream.current = stream;
       }
       setStatus("idle");
@@ -257,7 +251,9 @@ export function useReactMediaRecorder({
       mediaRecorder.current.ondataavailable = onRecordingActive;
       mediaRecorder.current.onstop = onRecordingStop;
       mediaRecorder.current.onstart = onRecordingStart;
-      mediaRecorder.current.onerror = () => {
+      mediaRecorder.current.onerror = (e) => {
+        console.log("mediaRecorder.current.onerror: ", e);
+        
         setError("NO_RECORDER");
         setStatus("idle");
       };
