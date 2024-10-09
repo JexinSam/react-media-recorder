@@ -148,9 +148,9 @@ export function useReactMediaRecorder({
         }
         mediaStream.current = stream;
       } else {
-        // if (mediaStream.current) {
-        //   mediaStream.current.getTracks().forEach(track => track.stop());
-        // }
+        if (mediaStream.current) {
+          mediaStream.current.getTracks().forEach(track => track.stop());
+        }
         const stream = await window.navigator.mediaDevices.getUserMedia(
             requiredMedia
         );
